@@ -1,5 +1,9 @@
 pipeline {
     agent any
+    environment {
+        DOCKER_HUB_REPO = "htai99/gitops-repo"
+        DOCKER_HUB_CREDENTIALS_ID = "gitops-docker"
+    }
     stages {
         stage('Checkout Github') {
             steps {
@@ -9,7 +13,10 @@ pipeline {
         }        
         stage('Build Docker Image') {
             steps {
-                echo 'Building Docker image...'
+                script {
+                    echo 'Building Docker image...'
+                    dockerImage = docker.build("${DOCKER_HUB_REPO}:latest")
+                }
             }
         }
         stage('Push Image to DockerHub') {
